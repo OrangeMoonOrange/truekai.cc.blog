@@ -35,4 +35,11 @@ public interface MsSysUserService extends IService<MsSysUserDO> {
      * @return
      */
     Result logout(String token);
+
+    /**
+     * 校验token
+     * @param token
+     * @return
+     */
+    MsSysUserDO checkToken(String token);
 }

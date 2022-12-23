@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import truekai.cc.utils.JWTUtils;
 import truekai.cc.vo.Result;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -111,5 +112,22 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
     public Result logout(String token) {
         redisTemplate.delete("user::login::"+token);
         return Result.success(null);
+    }
+
+    @Override
+    public MsSysUserDO checkToken(String token) {
+        if (StringUtils.isBlank(token)){
+            return null;
+        }
+        Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);
+        if (stringObjectMap == null){
+            return null;
+        }
+        String userJson = redisTemplate.opsForValue().get("user::login::"+token);
+        if (StringUtils.isBlank(userJson)){
+            return null;
+        }
+        MsSysUserDO sysUser = JSON.parseObject(userJson, MsSysUserDO.class);
+        return sysUser;
     }
 }
