@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="truekai.cc.mapper.MsSysUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="truekai.cc.model.MsSysUserDO">
+        <id column="id" property="id"/>
+        <result column="account" property="account"/>
+        <result column="admin" property="admin"/>
+        <result column="avatar" property="avatar"/>
+        <result column="create_date" property="createDate"/>
+        <result column="deleted" property="deleted"/>
+        <result column="email" property="email"/>
+        <result column="last_login" property="lastLogin"/>
+        <result column="mobile_phone_number" property="mobilePhoneNumber"/>
+        <result column="nickname" property="nickname"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , account, admin, avatar, create_date, deleted, email, last_login, mobile_phone_number, nickname, password, salt, status
+    </sql>
+
+    <select id="findUser" resultType="truekai.cc.model.MsSysUserDO">
+        select *
+        from ms_sys_user
+        where account = #{account}
+    </select>
+
+</mapper>
