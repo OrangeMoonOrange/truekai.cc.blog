@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 @Configuration
 public class LoginInterceptor implements HandlerInterceptor {
 
-    private static ThreadLocal<MsSysUserDO> threadLocal = new ThreadLocal<>();
+    public static ThreadLocal<MsSysUserDO> threadLocal = new ThreadLocal<>();
 
     @Autowired
     private MsSysUserService userService;

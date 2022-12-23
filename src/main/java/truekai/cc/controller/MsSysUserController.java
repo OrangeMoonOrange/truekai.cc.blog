@@ -26,23 +26,28 @@ public class MsSysUserController {
 
     @PostMapping("login")
     public Result login(@RequestBody LoginRequest loginRequest) {
-        log.info("用户登录接口参数：，{}",loginRequest);
-        Result result=msSysUserService.login(loginRequest);
-        return Result.success(result);
+        log.info("用户登录接口参数：，{}", loginRequest);
+        Result result = msSysUserService.login(loginRequest);
+        return result;
     }
 
     @PostMapping("register")
     public Result register(@RequestBody LoginRequest loginRequest) {
-        log.info("用户注册接口参数：，{}",loginRequest);
-        Result result=msSysUserService.register(loginRequest);
-        return Result.success(result);
+        log.info("用户注册接口参数：，{}", loginRequest);
+        Result result = msSysUserService.register(loginRequest);
+        return result;
     }
 
     @PostMapping("logout")
     public Result logout(@RequestHeader("Authorization") String token) {
-        log.info("用户登出接口参数：，{}",token);
-        Result result=msSysUserService.logout(token);
-        return Result.success(result);
+        log.info("用户登出接口参数：，{}", token);
+        Result result = msSysUserService.logout(token);
+        return result;
+    }
+
+    @GetMapping("users/currentUser")
+    public Result currentUser(@RequestHeader("Authorization") String token) {
+        return msSysUserService.findUserByToken(token);
     }
 
 }

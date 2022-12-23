@@ -42,4 +42,11 @@ public interface MsSysUserService extends IService<MsSysUserDO> {
      * @return
      */
     MsSysUserDO checkToken(String token);
+
+    /**
+     * 获取当前登录用户的信息
+     * @param token
+     * @return
+     */
+    Result findUserByToken(String token);
 }

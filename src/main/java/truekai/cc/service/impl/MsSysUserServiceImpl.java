@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import org.springframework.transaction.annotation.Transactional;
 import truekai.cc.enumCode.ErrorCode;
+import truekai.cc.interceptor.LoginInterceptor;
 import truekai.cc.model.MsSysUserDO;
 import truekai.cc.mapper.MsSysUserMapper;
 import truekai.cc.request.LoginRequest;
@@ -64,13 +65,13 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         }
         String token = JWTUtils.createToken(userDO.getId());
 
-        redisTemplate.opsForValue().set("user::login::"+token, JSON.toJSONString(userDO), 1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("user::login::" + token, JSON.toJSONString(userDO), 1, TimeUnit.DAYS);
 
         return Result.success(token);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Result register(LoginRequest loginRequest) {
         log.info("MsSysUserServiceImpl.register入参：{}", loginRequest);
         /**
@@ -104,30 +105,36 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         userDO.setEmail("");
         int insert = userMapper.insert(userDO);
         String token = JWTUtils.createToken(userDO.getId());
-        redisTemplate.opsForValue().set("user::login::"+token, JSON.toJSONString(userDO), 1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("user::login::" + token, JSON.toJSONString(userDO), 1, TimeUnit.DAYS);
         return Result.success(token);
     }
 
     @Override
     public Result logout(String token) {
-        redisTemplate.delete("user::login::"+token);
+        redisTemplate.delete("user::login::" + token);
         return Result.success(null);
     }
 
     @Override
     public MsSysUserDO checkToken(String token) {
-        if (StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(token)) {
             return null;
         }
         Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);
-        if (stringObjectMap == null){
+        if (stringObjectMap == null) {
             return null;
         }
-        String userJson = redisTemplate.opsForValue().get("user::login::"+token);
-        if (StringUtils.isBlank(userJson)){
+        String userJson = redisTemplate.opsForValue().get("user::login::" + token);
+        if (StringUtils.isBlank(userJson)) {
             return null;
         }
         MsSysUserDO sysUser = JSON.parseObject(userJson, MsSysUserDO.class);
         return sysUser;
+    }
+
+    @Override
+    public Result findUserByToken(String token) {
+        MsSysUserDO userDO = LoginInterceptor.threadLocal.get();
+        return Result.success(userDO);
     }
 }
