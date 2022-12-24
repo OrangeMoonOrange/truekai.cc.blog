@@ -1,12 +1,12 @@
 package truekai.cc.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import truekai.cc.interceptor.ArticleListRequest;
 import truekai.cc.model.MsArticleDO;
 import truekai.cc.vo.MsArticleVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -25,5 +25,5 @@ public interface MsArticleMapper extends BaseMapper<MsArticleDO> {
      * @param articleListRequest
      * @return
      */
-    IPage<MsArticleVo> articlesList(Page page, @Param("re") ArticleListRequest articleListRequest);
+    List<MsArticleVo> articlesList(@Param("re") ArticleListRequest articleListRequest);
 }
