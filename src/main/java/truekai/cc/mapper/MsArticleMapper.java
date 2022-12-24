@@ -26,4 +26,6 @@ public interface MsArticleMapper extends BaseMapper<MsArticleDO> {
      * @return
      */
     List<MsArticleVo> articlesList(@Param("re") ArticleListRequest articleListRequest);
+
+    MsArticleVo selectArticlesById(@Param("id") Long id);
 }

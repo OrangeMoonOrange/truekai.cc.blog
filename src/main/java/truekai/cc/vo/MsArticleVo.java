@@ -65,4 +65,6 @@ public class MsArticleVo implements Serializable {
      */
     private List<TagsVo> tags;
 
+    private CategoryVo category;
+
 }

@@ -37,6 +37,14 @@
        </collection>
     </resultMap>
 
+    <resultMap id="selectArticlesById" type="truekai.cc.vo.MsArticleVo"  extends="articlesList">
+        <result column="category.id" property="category.id" jdbcType="INTEGER"/>
+        <result column="category.avatar" property="category.avatar" jdbcType="VARCHAR"/>
+        <result column="category.categoryName" property="category.categoryName" jdbcType="VARCHAR"/>
+        <result column="category.description" property="category.description" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
 
 
     <!-- 通用查询结果列 -->
@@ -45,7 +53,7 @@
         , comment_counts, create_date, summary, title, view_counts, weight, author_id, body_id, category_id
     </sql>
 
-    <select id="articlesList" resultMap="articlesList">
+    <select id="articlesList" resultMap="selectArticlesById">
         SELECT ma.*,msu.id as "author.id",
                msu.avatar as "author.avatar" ,
                msu.nickname as "author.nickname",
@@ -60,6 +68,31 @@
                  left join ms_tag mt on
             mat.tag_id =mt.id
         order by ma.weight,ma.create_date desc
+
+    </select>
+
+    <select id="selectArticlesById" resultMap="selectArticlesById">
+        SELECT ma.*,
+               msu.id as "author.id",
+               msu.avatar as "author.avatar" ,
+               msu.nickname as "author.nickname",
+               mt.id as "tagg_id" ,
+               mt.tag_name as "tagg_tagName",
+               mt.avatar as "tagg_avatar",
+               mc.id as "category.id",
+               mc.avatar as "category.avatar",
+               mc.category_name as "category.categoryName",
+               mc.description as "category.description"
+        from ms_article ma
+                 left join ms_sys_user msu on
+            ma.author_id =msu.id
+                 left join ms_category mc on
+            ma.category_id =mc.id
+                 left join ms_article_tag mat on
+            ma.id =mat.article_id
+                 left join ms_tag mt on
+            mat.tag_id =mt.id
+        where ma.id=#{id}
 
     </select>
 

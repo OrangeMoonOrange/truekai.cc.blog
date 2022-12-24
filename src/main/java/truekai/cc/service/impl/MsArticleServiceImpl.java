@@ -10,6 +10,7 @@ import truekai.cc.model.MsArticleDO;
 import truekai.cc.service.MsArticleService;
 import truekai.cc.utils.PageVo;
 import truekai.cc.utils.pageList;
+import truekai.cc.vo.MsArticleVo;
 import truekai.cc.vo.Result;
 
 import java.util.List;
@@ -35,5 +36,12 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
         PageVo<Object> objectPageVo = pageList.pageList(list, articleListRequest.getPage(), articleListRequest.getPageSize());
         //增加分页参数给前端
         return Result.success(objectPageVo.getList());
+    }
+
+    @Override
+    public Result articlesViewById(Long id) {
+        log.info("MsArticleServiceImpl.articlesViewById：{}", id);
+        MsArticleVo msArticleVo = articleMapper.selectArticlesById(id);
+        return Result.success(msArticleVo);
     }
 }

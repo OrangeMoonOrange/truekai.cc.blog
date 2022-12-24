@@ -21,4 +21,11 @@ public interface MsArticleService extends IService<MsArticleDO> {
      * @return
      */
     Result articlesList(ArticleListRequest articleListRequest);
+
+    /**
+     * 文章详情查询
+     * @param id
+     * @return
+     */
+    Result articlesViewById(Long id);
 }
