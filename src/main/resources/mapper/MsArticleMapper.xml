@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="truekai.cc.mapper.MsArticleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="truekai.cc.model.MsArticleDO">
+        <id column="id" property="id"/>
+        <result column="comment_counts" property="commentCounts"/>
+        <result column="create_date" property="createDate"/>
+        <result column="summary" property="summary"/>
+        <result column="title" property="title"/>
+        <result column="view_counts" property="viewCounts"/>
+        <result column="weight" property="weight"/>
+        <result column="author_id" property="authorId"/>
+        <result column="body_id" property="bodyId"/>
+        <result column="category_id" property="categoryId"/>
+    </resultMap>
+
+    <resultMap id="articlesList" type="truekai.cc.vo.MsArticleVo">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="comment_counts" property="commentCounts" jdbcType="INTEGER"/>
+        <result column="create_date" property="createDate" jdbcType="BIGINT"/>
+        <result column="summary" property="summary" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="view_counts" property="viewCounts" jdbcType="INTEGER"/>
+        <result column="weight" property="weight" jdbcType="INTEGER"/>
+        <result column="tag_id" property="tagId" jdbcType="VARCHAR"/>
+        <result column="author.id" property="author.id" jdbcType="BIGINT"/>
+        <result column="author.avatar" property="author.avatar" jdbcType="VARCHAR"/>
+        <result column="author.nickname" property="author.nickname" jdbcType="VARCHAR"/>
+       <collection property="tags"  columnPrefix="tagg_"
+       javaType="java.util.List" ofType="truekai.cc.vo.TagsVo" >
+           <id column="id" property="id" jdbcType="BIGINT"/>
+           <result column="tagName" property="tagName" jdbcType="VARCHAR"/>
+           <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+       </collection>
+    </resultMap>
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , comment_counts, create_date, summary, title, view_counts, weight, author_id, body_id, category_id
+    </sql>
+
+    <select id="articlesList" resultMap="articlesList">
+        SELECT ma.*,msu.id as "author.id",
+               msu.avatar as "author.avatar" ,
+               msu.nickname as "author.nickname",
+               mt.id as "tagg_id" ,
+               mt.tag_name as "tagg_tagName",
+               mt.avatar as "tagg_avatar"
+        from ms_article ma
+                 left join ms_sys_user msu on
+            ma.author_id =msu.id
+                 left join ms_article_tag mat on
+            ma.id =mat.article_id
+                 left join ms_tag mt on
+            mat.tag_id =mt.id
+        order by ma.weight,ma.create_date desc
+
+    </select>
+
+</mapper>
