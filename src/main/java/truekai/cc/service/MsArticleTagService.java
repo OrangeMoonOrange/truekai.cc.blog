@@ -1,7 +1,8 @@
 package truekai.cc.service;
 
-import truekai.cc.model.MsArticleTagDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import truekai.cc.model.MsArticleTagDO;
+import truekai.cc.vo.Result;
 
 /**
  * <p>
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface MsArticleTagService extends IService<MsArticleTagDO> {
 
+
+    /**
+     * 首页最热标签
+     * @return
+     */
+    Result hots();
 }

@@ -14,4 +14,22 @@
         id, article_id, tag_id
     </sql>
 
+    <select id="hots" resultType="truekai.cc.vo.HotTagVo">
+        SELECT
+            tag_id as id,
+            count(*) as tagCount,
+            mt.tag_name as tagName
+        FROM
+            `ms_article_tag` mat
+                left join ms_tag mt
+                          on
+                              mat.tag_id = mt.id
+        group by
+            tag_id
+        order by
+            count(*)
+                desc
+            limit #{limit}
+    </select>
+
 </mapper>

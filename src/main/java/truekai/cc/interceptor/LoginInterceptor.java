@@ -1,6 +1,5 @@
 package truekai.cc.interceptor;
 
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,17 +38,23 @@ public class LoginInterceptor implements HandlerInterceptor {
          * 4. 如果认证成功 放行即可
          */
 
-
+        String method = request.getMethod();
+        String requestURI = request.getRequestURI();
         String token = request.getHeader("Authorization");
         if (token == null) {
             token = request.getParameter("Authorization");
         }
         log.info("=================request start===========================");
-        String requestURI = request.getRequestURI();
         log.info("request uri:{}", requestURI);
         log.info("request method:{}", request.getMethod());
         log.info("token:{}", token);
         log.info("=================request end===========================");
+
+        //ToDo 简单处理跨域 OPTIONS请求，后续需要改进
+        if(method.equalsIgnoreCase("OPTIONS") && "/users/currentUser".equalsIgnoreCase(requestURI)){
+            return true;
+        }
+
         if (StringUtils.isNotBlank(token)) {
             MsSysUserDO userDO = userService.checkToken(token);
             if (userDO == null) {

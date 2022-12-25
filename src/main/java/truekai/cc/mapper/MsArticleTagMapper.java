@@ -1,7 +1,10 @@
 package truekai.cc.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import truekai.cc.model.MsArticleTagDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface MsArticleTagMapper extends BaseMapper<MsArticleTagDO> {
 
+    /**
+     * 最热标签查询
+     * @param hotTaglimit
+     * @return
+     */
+    List<MsArticleTagDO> hots(@Param("limit") Integer hotTaglimit);
 }
