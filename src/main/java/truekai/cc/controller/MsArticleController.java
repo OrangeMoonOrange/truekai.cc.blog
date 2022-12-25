@@ -52,6 +52,13 @@ public class MsArticleController {
         return result;
     }
 
+    //文章归档
+    @PostMapping("/articles/listArchives")
+    public Result listArchives() {
+        Result result = msArticleService.listArchives();
+        return result;
+    }
+
 
 
 }

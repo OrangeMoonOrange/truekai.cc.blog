@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import truekai.cc.interceptor.ArticleListRequest;
 import truekai.cc.model.MsArticleDO;
+import truekai.cc.vo.ArchivesVo;
 import truekai.cc.vo.MsArticleVo;
 
 import java.util.List;
@@ -41,4 +42,10 @@ public interface MsArticleMapper extends BaseMapper<MsArticleDO> {
      * @return
      */
     Integer updateArticleViewCountById(@Param("id") Long id,@Param("count") Integer viewCounts);
+
+    /**
+     * 文章归档
+     * @return
+     */
+    List<ArchivesVo> listArchives();
 }

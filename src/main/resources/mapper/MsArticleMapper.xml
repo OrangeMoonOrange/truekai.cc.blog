@@ -68,6 +68,12 @@
             ma.id = mat.article_id
                  left join ms_tag mt on
             mat.tag_id = mt.id
+                <where>
+        <if test="re.year != null and re.year.length>0 and re.month != null and re.month.length>0">
+            and (FROM_UNIXTIME(ma.create_date/1000,'%Y') =#{re.year} and FROM_UNIXTIME(ma.create_date/1000,'%m')=#{re.month})
+        </if>
+                </where>
+
         order by ma.weight, ma.create_date desc
 
     </select>
@@ -103,5 +109,10 @@
     <update id="updateArticleViewCountById" >
         update ms_article set view_counts=view_counts+1 where view_counts=#{count} and id=#{id}
     </update>
+
+    <select id="listArchives" resultType="truekai.cc.vo.ArchivesVo">
+        select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m')
+        as month,count(*) as count from ms_article group by year,month
+    </select>
 
 </mapper>

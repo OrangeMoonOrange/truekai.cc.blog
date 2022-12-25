@@ -18,6 +18,9 @@ public class ArticleListRequest implements Serializable {
 
     private Long tagId;
 
+    /**
+     * 文章归档查询
+     */
     private String year;
 
     private String month;

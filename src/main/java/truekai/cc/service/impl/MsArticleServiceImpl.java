@@ -13,6 +13,7 @@ import truekai.cc.service.MsArticleService;
 import truekai.cc.service.asyncService.ThreadService;
 import truekai.cc.utils.PageVo;
 import truekai.cc.utils.pageList;
+import truekai.cc.vo.ArchivesVo;
 import truekai.cc.vo.MsArticleVo;
 import truekai.cc.vo.Result;
 
@@ -77,5 +78,11 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
                 .orderByDesc(MsArticleDO::getCreateDate)
                 .last("limit " + newArticleslimit));
         return Result.success(msArticleDOS);
+    }
+
+    @Override
+    public Result listArchives() {
+        List<ArchivesVo> list=articleMapper.listArchives();
+        return Result.success(list);
     }
 }
