@@ -72,7 +72,13 @@
         <if test="re.year != null and re.year.length>0 and re.month != null and re.month.length>0">
             and (FROM_UNIXTIME(ma.create_date/1000,'%Y') =#{re.year} and FROM_UNIXTIME(ma.create_date/1000,'%m')=#{re.month})
         </if>
-                </where>
+           <if test="re.categoryId != null and re.categoryId !=''">
+            and ma.category_id=#{re.categoryId}
+          </if>
+                    <if test="re.tagId != null and re.tagId !=''">
+                        and ma.tag_id=#{re.tagId}
+                    </if>
+        </where>
 
         order by ma.weight, ma.create_date desc
 

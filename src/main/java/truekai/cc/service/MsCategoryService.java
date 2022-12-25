@@ -17,4 +17,6 @@ public interface MsCategoryService extends IService<MsCategoryDO> {
     Result findAllDetail();
 
     Result categoryDetailById(Long id);
+
+    Result findAll();
 }

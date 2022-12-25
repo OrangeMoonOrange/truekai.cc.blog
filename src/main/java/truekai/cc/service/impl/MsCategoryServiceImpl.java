@@ -37,4 +37,10 @@ public class MsCategoryServiceImpl extends ServiceImpl<MsCategoryMapper, MsCateg
                 .eq(MsCategoryDO::getId, id));
         return Result.success(msCategoryDO);
     }
+
+    @Override
+    public Result findAll() {
+        List<MsCategoryDO> msCategoryDOS = categoryMapper.selectList(null);
+        return Result.success(msCategoryDOS);
+    }
 }

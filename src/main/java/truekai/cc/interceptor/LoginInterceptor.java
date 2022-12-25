@@ -51,7 +51,11 @@ public class LoginInterceptor implements HandlerInterceptor {
         log.info("=================request end===========================");
 
         //ToDo 简单处理跨域 OPTIONS请求，后续需要改进
-        if(method.equalsIgnoreCase("OPTIONS") && "/users/currentUser".equalsIgnoreCase(requestURI)){
+        if(method.equalsIgnoreCase("OPTIONS")
+                &&("/users/currentUser".equalsIgnoreCase(requestURI)
+        || "/tags".equalsIgnoreCase(requestURI)
+        || "/categorys".equalsIgnoreCase(requestURI)
+        || "/articles/publish".equalsIgnoreCase(requestURI))){
             return true;
         }
 

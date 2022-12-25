@@ -37,5 +37,10 @@ public class MsArticleTagController {
         return msArticleTagService.findDetailById(id);
     }
 
+    @GetMapping
+    public Result findAll(){
+        return msArticleTagService.findAllDetail();
+    }
+
 }
 
