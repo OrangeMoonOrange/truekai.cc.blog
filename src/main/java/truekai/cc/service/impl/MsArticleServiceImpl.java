@@ -28,7 +28,9 @@ import truekai.cc.vo.MsArticleVo;
 import truekai.cc.vo.Result;
 import truekai.cc.vo.TagsVo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -111,6 +113,7 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
     public Result publish(ArticleRequest articleParam) {
         MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
         MsArticleDO articleDO = null;
+        String id="";
         if (articleParam.getId() == null) { //新增
             articleDO = new MsArticleDO();
             //维护article表信息
@@ -149,6 +152,7 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
                 msArticleTagMapper.insert(articleTagDO);
             }
             articleMapper.insert(articleDO);
+            id=articleDOKey+"";
         } else {//修改
             //更新新的信息
             articleDO = new MsArticleDO();
@@ -177,7 +181,10 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
                 articleTagDO.setId(articleTagDOKey);
                 msArticleTagMapper.insert(articleTagDO);
             }
+            id=articleParam.getId()+"";
         }
-        return Result.success(null);
+        Map<String, String> map = new HashMap<>();
+        map.put("id", id);
+        return Result.success(map);
     }
 }

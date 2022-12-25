@@ -97,7 +97,7 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         userDO.setPassword(DigestUtils.md5Hex(password + slat));
         userDO.setCreateDate(System.currentTimeMillis());
         userDO.setLastLogin(System.currentTimeMillis());
-        userDO.setAvatar("/static/img/logo.b3a48c0.png");
+        userDO.setAvatar("https://dcloud-link-kakai.oss-cn-beijing.aliyuncs.com/user/2022/12/25/08d84f0f73e248dcbae1f37e48663ef8.png");
         userDO.setAdmin(1); //1 为true
         userDO.setDeleted(0); // 0 为false
         userDO.setSalt("");
