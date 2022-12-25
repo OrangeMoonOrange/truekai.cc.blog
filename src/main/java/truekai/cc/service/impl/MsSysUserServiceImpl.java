@@ -135,6 +135,11 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
     @Override
     public Result findUserByToken(String token) {
         MsSysUserDO userDO = LoginInterceptor.threadLocal.get();
+        MsSysUserDO sysUserDO=new MsSysUserDO();
+        sysUserDO.setId(1573690736216416258l);
+        sysUserDO.setAccount("user");
+        sysUserDO.setNickname("123");
+        sysUserDO.setAvatar("/static/img/logo.b3a48c0.png");
         return Result.success(userDO);
     }
 }

@@ -42,6 +42,7 @@
         <result column="category.avatar" property="category.avatar" jdbcType="VARCHAR"/>
         <result column="category.categoryName" property="category.categoryName" jdbcType="VARCHAR"/>
         <result column="category.description" property="category.description" jdbcType="VARCHAR"/>
+        <result column="body.content" property="body.content" jdbcType="VARCHAR"/>
 
     </resultMap>
 
@@ -82,7 +83,8 @@
                mc.id as "category.id",
                mc.avatar as "category.avatar",
                mc.category_name as "category.categoryName",
-               mc.description as "category.description"
+               mc.description as "category.description",
+               mab.content as "body.content"
         from ms_article ma
                  left join ms_sys_user msu on
             ma.author_id =msu.id
@@ -90,6 +92,8 @@
             ma.category_id =mc.id
                  left join ms_article_tag mat on
             ma.id =mat.article_id
+                 LEFT join ms_article_body mab on
+            ma.id =mab.article_id
                  left join ms_tag mt on
             mat.tag_id =mt.id
         where ma.id=#{id}

@@ -32,9 +32,10 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
     @Override
     public Result articlesList(ArticleListRequest articleListRequest) {
         log.info("MsArticleServiceImpl.articlesList入参：{}", articleListRequest);
-        List list = articleMapper.articlesList( articleListRequest);
+        List list = articleMapper.articlesList(articleListRequest);
         PageVo<Object> objectPageVo = pageList.pageList(list, articleListRequest.getPage(), articleListRequest.getPageSize());
         //增加分页参数给前端
+
         return Result.success(objectPageVo.getList());
     }
 

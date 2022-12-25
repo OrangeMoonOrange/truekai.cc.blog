@@ -1,11 +1,9 @@
 package truekai.cc.controller;
 
 
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import truekai.cc.request.LoginRequest;
 import truekai.cc.service.MsSysUserService;
 import truekai.cc.vo.Result;
@@ -38,7 +36,7 @@ public class MsSysUserController {
         return result;
     }
 
-    @PostMapping("logout")
+    @GetMapping("logout")
     public Result logout(@RequestHeader("Authorization") String token) {
         log.info("用户登出接口参数：，{}", token);
         Result result = msSysUserService.logout(token);

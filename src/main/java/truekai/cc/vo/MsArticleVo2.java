@@ -12,9 +12,9 @@ import java.util.List;
  */
 
 @Data
-public class MsArticleVo implements Serializable {
+public class MsArticleVo2 implements Serializable {
 
-    public MsArticleVo( ){
+    public MsArticleVo2( ){
 
     }
 
@@ -65,12 +65,6 @@ public class MsArticleVo implements Serializable {
      */
     private List<TagsVo> tags;
 
-    /**
-     * 文章分类信息
-     */
     private CategoryVo category;
-
-    //文章内容
-    private ContentVo body;
 
 }

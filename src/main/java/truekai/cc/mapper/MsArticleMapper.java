@@ -21,11 +21,16 @@ public interface MsArticleMapper extends BaseMapper<MsArticleDO> {
     /**
      * 分页查询文章列表
      *
-     * @param page
+     * @param
      * @param articleListRequest
      * @return
      */
     List<MsArticleVo> articlesList(@Param("re") ArticleListRequest articleListRequest);
 
+    /**
+     * 根据id 查询文章详情
+     * @param id
+     * @return
+     */
     MsArticleVo selectArticlesById(@Param("id") Long id);
 }
