@@ -37,7 +37,10 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
 
 
     @Value("${hotArticles.limit}")
-    private Integer limit;
+    private Integer hotArticleslimit;
+
+    @Value("${newArticles.limit}")
+    private Integer newArticleslimit;
 
     @Override
     public Result articlesList(ArticleListRequest articleListRequest) {
@@ -63,7 +66,16 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
         List<MsArticleDO> msArticleDOS = articleMapper.selectList(new LambdaQueryWrapper<MsArticleDO>()
                 .select(MsArticleDO::getId, MsArticleDO::getTitle)
                 .orderByDesc(MsArticleDO::getViewCounts)
-                .last("limit " + limit));
+                .last("limit " + hotArticleslimit));
+        return Result.success(msArticleDOS);
+    }
+
+    @Override
+    public Result newArticles() {
+        List<MsArticleDO> msArticleDOS = articleMapper.selectList(new LambdaQueryWrapper<MsArticleDO>()
+                .select(MsArticleDO::getId, MsArticleDO::getTitle)
+                .orderByDesc(MsArticleDO::getCreateDate)
+                .last("limit " + newArticleslimit));
         return Result.success(msArticleDOS);
     }
 }

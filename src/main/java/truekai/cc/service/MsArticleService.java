@@ -34,4 +34,10 @@ public interface MsArticleService extends IService<MsArticleDO> {
      * @return
      */
     Result hotArticles();
+
+    /**
+     * 首页最新文章
+     * @return
+     */
+    Result newArticles();
 }
