@@ -20,4 +20,12 @@ public interface MsArticleTagService extends IService<MsArticleTagDO> {
      * @return
      */
     Result hots();
+
+    /**
+     * 查询ms_tag表的内容
+     * @return
+     */
+    Result findAllDetail();
+
+    Result findDetailById(Long id);
 }
