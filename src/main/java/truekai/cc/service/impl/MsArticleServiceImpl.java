@@ -1,8 +1,10 @@
 package truekai.cc.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import truekai.cc.interceptor.ArticleListRequest;
 import truekai.cc.mapper.MsArticleMapper;
@@ -33,6 +35,10 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
     @Autowired
     private ThreadService threadService;
 
+
+    @Value("${hotArticles.limit}")
+    private Integer limit;
+
     @Override
     public Result articlesList(ArticleListRequest articleListRequest) {
         log.info("MsArticleServiceImpl.articlesList入参：{}", articleListRequest);
@@ -48,7 +54,16 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
         log.info("MsArticleServiceImpl.articlesViewById：{}", id);
         MsArticleVo msArticleVo = articleMapper.selectArticlesById(id);
         //异步更新阅读的时候如何保证高并发的时候阅读数量是正常的?
-        threadService.updateArticleViewCount(id,msArticleVo);
+        threadService.updateArticleViewCount(id, msArticleVo);
         return Result.success(msArticleVo);
+    }
+
+    @Override
+    public Result hotArticles() {
+        List<MsArticleDO> msArticleDOS = articleMapper.selectList(new LambdaQueryWrapper<MsArticleDO>()
+                .select(MsArticleDO::getId, MsArticleDO::getTitle)
+                .orderByDesc(MsArticleDO::getViewCounts)
+                .last("limit " + limit));
+        return Result.success(msArticleDOS);
     }
 }

@@ -40,5 +40,15 @@ public class MsArticleController {
         return result;
     }
 
+    //首页最热文章
+    @PostMapping("articles/hot")
+    public Result hotArticles() {
+        Integer limit=5;
+        Result result = msArticleService.hotArticles();
+        return result;
+    }
+
+
+
 }
 

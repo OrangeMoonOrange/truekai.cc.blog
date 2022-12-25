@@ -32,11 +32,6 @@ public class ThreadService {
     public void updateArticleViewCount(Long id, MsArticleVo vo) {
         log.info("更新ID:{},前阅读数量:{}",id,vo.getViewCounts());
         Integer a=articleMapper.updateArticleViewCountById(id,vo.getViewCounts());
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         log.info("异步更新阅读数量成功！");
     }
 }
