@@ -33,4 +33,12 @@ public interface MsArticleMapper extends BaseMapper<MsArticleDO> {
      * @return
      */
     MsArticleVo selectArticlesById(@Param("id") Long id);
+
+    /**
+     * 根据id 更新文章的阅读数量
+     * @param id
+     * @param viewCounts
+     * @return
+     */
+    Integer updateArticleViewCountById(@Param("id") Long id,@Param("count") Integer viewCounts);
 }

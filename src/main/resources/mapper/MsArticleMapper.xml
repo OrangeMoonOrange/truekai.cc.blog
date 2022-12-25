@@ -29,15 +29,15 @@
         <result column="author.id" property="author.id" jdbcType="BIGINT"/>
         <result column="author.avatar" property="author.avatar" jdbcType="VARCHAR"/>
         <result column="author.nickname" property="author.nickname" jdbcType="VARCHAR"/>
-       <collection property="tags"  columnPrefix="tagg_"
-       javaType="java.util.List" ofType="truekai.cc.vo.TagsVo" >
-           <id column="id" property="id" jdbcType="BIGINT"/>
-           <result column="tagName" property="tagName" jdbcType="VARCHAR"/>
-           <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
-       </collection>
+        <collection property="tags" columnPrefix="tagg_"
+                    javaType="java.util.List" ofType="truekai.cc.vo.TagsVo">
+            <id column="id" property="id" jdbcType="BIGINT"/>
+            <result column="tagName" property="tagName" jdbcType="VARCHAR"/>
+            <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        </collection>
     </resultMap>
 
-    <resultMap id="selectArticlesById" type="truekai.cc.vo.MsArticleVo"  extends="articlesList">
+    <resultMap id="selectArticlesById" type="truekai.cc.vo.MsArticleVo" extends="articlesList">
         <result column="category.id" property="category.id" jdbcType="INTEGER"/>
         <result column="category.avatar" property="category.avatar" jdbcType="VARCHAR"/>
         <result column="category.categoryName" property="category.categoryName" jdbcType="VARCHAR"/>
@@ -47,7 +47,6 @@
     </resultMap>
 
 
-
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id
@@ -55,49 +54,54 @@
     </sql>
 
     <select id="articlesList" resultMap="selectArticlesById">
-        SELECT ma.*,msu.id as "author.id",
-               msu.avatar as "author.avatar" ,
+        SELECT ma.*,
+               msu.id       as "author.id",
+               msu.avatar   as "author.avatar",
                msu.nickname as "author.nickname",
-               mt.id as "tagg_id" ,
-               mt.tag_name as "tagg_tagName",
-               mt.avatar as "tagg_avatar"
+               mt.id        as "tagg_id",
+               mt.tag_name  as "tagg_tagName",
+               mt.avatar    as "tagg_avatar"
         from ms_article ma
                  left join ms_sys_user msu on
-            ma.author_id =msu.id
+            ma.author_id = msu.id
                  left join ms_article_tag mat on
-            ma.id =mat.article_id
+            ma.id = mat.article_id
                  left join ms_tag mt on
-            mat.tag_id =mt.id
-        order by ma.weight,ma.create_date desc
+            mat.tag_id = mt.id
+        order by ma.weight, ma.create_date desc
 
     </select>
 
     <select id="selectArticlesById" resultMap="selectArticlesById">
         SELECT ma.*,
-               msu.id as "author.id",
-               msu.avatar as "author.avatar" ,
-               msu.nickname as "author.nickname",
-               mt.id as "tagg_id" ,
-               mt.tag_name as "tagg_tagName",
-               mt.avatar as "tagg_avatar",
-               mc.id as "category.id",
-               mc.avatar as "category.avatar",
+               msu.id           as "author.id",
+               msu.avatar       as "author.avatar",
+               msu.nickname     as "author.nickname",
+               mt.id            as "tagg_id",
+               mt.tag_name      as "tagg_tagName",
+               mt.avatar        as "tagg_avatar",
+               mc.id            as "category.id",
+               mc.avatar        as "category.avatar",
                mc.category_name as "category.categoryName",
-               mc.description as "category.description",
-               mab.content as "body.content"
+               mc.description   as "category.description",
+               mab.content      as "body.content"
         from ms_article ma
                  left join ms_sys_user msu on
-            ma.author_id =msu.id
+            ma.author_id = msu.id
                  left join ms_category mc on
-            ma.category_id =mc.id
+            ma.category_id = mc.id
                  left join ms_article_tag mat on
-            ma.id =mat.article_id
+            ma.id = mat.article_id
                  LEFT join ms_article_body mab on
-            ma.id =mab.article_id
+            ma.id = mab.article_id
                  left join ms_tag mt on
-            mat.tag_id =mt.id
-        where ma.id=#{id}
+            mat.tag_id = mt.id
+        where ma.id = #{id}
 
     </select>
+
+    <update id="updateArticleViewCountById" >
+        update ms_article set view_counts=view_counts+1 where view_counts=#{count} and id=#{id}
+    </update>
 
 </mapper>
