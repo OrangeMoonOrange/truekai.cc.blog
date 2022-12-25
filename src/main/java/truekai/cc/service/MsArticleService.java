@@ -3,6 +3,7 @@ package truekai.cc.service;
 import truekai.cc.interceptor.ArticleListRequest;
 import truekai.cc.model.MsArticleDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import truekai.cc.request.ArticleRequest;
 import truekai.cc.vo.Result;
 
 /**
@@ -46,4 +47,11 @@ public interface MsArticleService extends IService<MsArticleDO> {
      * @return
      */
     Result listArchives();
+
+    /**
+     * 文章发表
+     * @param articleParam
+     * @return
+     */
+    Result publish(ArticleRequest articleParam);
 }

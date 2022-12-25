@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import truekai.cc.interceptor.ArticleListRequest;
+import truekai.cc.request.ArticleRequest;
 import truekai.cc.service.MsArticleService;
 import truekai.cc.vo.Result;
 
@@ -56,6 +57,18 @@ public class MsArticleController {
     @PostMapping("/articles/listArchives")
     public Result listArchives() {
         Result result = msArticleService.listArchives();
+        return result;
+    }
+
+    //文章发布
+    @PostMapping("articles/publish")
+    public Result publish(@RequestBody ArticleRequest articleParam){
+        return msArticleService.publish(articleParam);
+    }
+
+    @PostMapping("articles/{id}")
+    public Result articleById(@PathVariable("id") Long id){
+        Result result = msArticleService.articlesViewById(id);
         return result;
     }
 

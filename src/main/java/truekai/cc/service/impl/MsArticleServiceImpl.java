@@ -1,21 +1,32 @@
 package truekai.cc.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import truekai.cc.interceptor.ArticleListRequest;
+import truekai.cc.interceptor.LoginInterceptor;
+import truekai.cc.mapper.MsArticleBodyMapper;
 import truekai.cc.mapper.MsArticleMapper;
+import truekai.cc.mapper.MsArticleTagMapper;
+import truekai.cc.model.MsArticleBodyDO;
 import truekai.cc.model.MsArticleDO;
+import truekai.cc.model.MsArticleTagDO;
+import truekai.cc.model.MsSysUserDO;
+import truekai.cc.request.ArticleRequest;
 import truekai.cc.service.MsArticleService;
 import truekai.cc.service.asyncService.ThreadService;
+import truekai.cc.utils.CustomerId;
 import truekai.cc.utils.PageVo;
 import truekai.cc.utils.pageList;
 import truekai.cc.vo.ArchivesVo;
 import truekai.cc.vo.MsArticleVo;
 import truekai.cc.vo.Result;
+import truekai.cc.vo.TagsVo;
 
 import java.util.List;
 
@@ -35,6 +46,15 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
 
     @Autowired
     private ThreadService threadService;
+
+    @Autowired
+    private CustomerId customerId;
+
+    @Autowired
+    private MsArticleTagMapper msArticleTagMapper;
+
+    @Autowired
+    private MsArticleBodyMapper msArticleBodyMapper;
 
 
     @Value("${hotArticles.limit}")
@@ -82,7 +102,82 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
 
     @Override
     public Result listArchives() {
-        List<ArchivesVo> list=articleMapper.listArchives();
+        List<ArchivesVo> list = articleMapper.listArchives();
         return Result.success(list);
+    }
+
+    @Override
+    @Transactional
+    public Result publish(ArticleRequest articleParam) {
+        MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
+        MsArticleDO articleDO = null;
+        if (articleParam.getId() == null) { //新增
+            articleDO = new MsArticleDO();
+            //维护article表信息
+            //生成主键
+            long articleDOKey = customerId.nextId();
+            long articleBodyKey = customerId.nextId();
+
+            articleDO.setId(articleDOKey);
+            articleDO.setAuthorId(sysUserDO.getId());
+            articleDO.setTitle(articleParam.getTitle());
+            articleDO.setViewCounts(0);
+            articleDO.setWeight(0);
+            articleDO.setSummary(articleParam.getSummary());
+            articleDO.setCommentCounts(0);
+            articleDO.setCreateDate(System.currentTimeMillis());
+            articleDO.setCategoryId(articleParam.getCategory().getId());
+            articleDO.setBodyId(articleBodyKey);
+
+            //维护Article_body 信息
+
+            MsArticleBodyDO bodyDO = new MsArticleBodyDO();
+            bodyDO.setArticleId(articleDO.getId());
+            bodyDO.setContent(articleParam.getBody().getContent());
+            bodyDO.setContentHtml(articleParam.getBody().getContentHtml());
+            bodyDO.setId(articleBodyKey);
+            msArticleBodyMapper.insert(bodyDO);
+
+            //维护Article_tag信息
+            MsArticleTagDO articleTagDO = null;
+            for (TagsVo tag : articleParam.getTags()) {
+                articleTagDO = new MsArticleTagDO();
+                long articleTagDOKey = customerId.nextId();
+                articleTagDO.setArticleId(articleDOKey);
+                articleTagDO.setTagId(tag.getId());
+                articleTagDO.setId(articleTagDOKey);
+                msArticleTagMapper.insert(articleTagDO);
+            }
+            articleMapper.insert(articleDO);
+        } else {//修改
+            //更新新的信息
+            articleDO = new MsArticleDO();
+            articleDO.setTitle(articleParam.getTitle());
+            articleDO.setSummary(articleParam.getSummary());
+            articleDO.setCategoryId(articleParam.getCategory().getId());
+            articleDO.setId(articleParam.getId());
+            articleMapper.updateById(articleDO);
+
+            //维护Article_body 更新
+            MsArticleBodyDO bodyDO = new MsArticleBodyDO();
+            bodyDO.setContent(articleParam.getBody().getContent());
+            bodyDO.setContentHtml(articleParam.getBody().getContentHtml());
+            msArticleBodyMapper.update(bodyDO, new LambdaUpdateWrapper<MsArticleBodyDO>()
+                    .eq(MsArticleBodyDO::getArticleId, articleParam.getId()));
+
+            //维护Article_tag信息 先删除再更新
+            msArticleTagMapper.delete(new LambdaQueryWrapper<MsArticleTagDO>()
+                    .eq(MsArticleTagDO::getArticleId, articleParam.getId()));
+            MsArticleTagDO articleTagDO = null;
+            for (TagsVo tag : articleParam.getTags()) {
+                articleTagDO = new MsArticleTagDO();
+                long articleTagDOKey = customerId.nextId();
+                articleTagDO.setArticleId(articleParam.getId());
+                articleTagDO.setTagId(tag.getId());
+                articleTagDO.setId(articleTagDOKey);
+                msArticleTagMapper.insert(articleTagDO);
+            }
+        }
+        return Result.success(null);
     }
 }

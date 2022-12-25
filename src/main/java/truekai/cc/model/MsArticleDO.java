@@ -23,7 +23,7 @@ public class MsArticleDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      @TableId(value = "id", type = IdType.AUTO)
+      @TableId(value = "id", type = IdType.INPUT)
     private Long id;
 
     /**
@@ -69,7 +69,7 @@ public class MsArticleDO implements Serializable {
     /**
      * 类别id
      */
-    private Integer categoryId;
+    private Long categoryId;
 
 
 }
