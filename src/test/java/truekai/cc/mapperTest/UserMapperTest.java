@@ -1,12 +1,10 @@
 package truekai.cc.mapperTest;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import truekai.cc.mapper.MsSysUserMapper;
-import truekai.cc.model.MsSysUserDO;
-
-import java.util.List;
 
 /**
  * 作者：熊凯凯
@@ -14,6 +12,8 @@ import java.util.List;
  */
 @SpringBootTest
 public class UserMapperTest {
+    @Autowired
+    private DruidDataSource dataSource;
 
     @Autowired
     private MsSysUserMapper userMapper;
@@ -21,7 +21,8 @@ public class UserMapperTest {
 
     @Test
     void contextLoads() {
-        List<MsSysUserDO> msSysUserDOS = userMapper.selectList(null);
-        System.out.println(msSysUserDOS);
+        System.out.println(dataSource.getProperties());
+        System.out.println(dataSource.getMaxActive());
+        System.out.println(dataSource.getClass());
     }
 }
