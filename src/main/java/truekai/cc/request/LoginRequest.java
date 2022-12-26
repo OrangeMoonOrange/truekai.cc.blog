@@ -24,4 +24,6 @@ public class LoginRequest {
      */
     private String nickname;
 
+    private String registerCode;
+
 }

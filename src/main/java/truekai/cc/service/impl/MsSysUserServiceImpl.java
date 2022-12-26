@@ -1,25 +1,25 @@
 package truekai.cc.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import truekai.cc.enumCode.ErrorCode;
 import truekai.cc.interceptor.LoginInterceptor;
-import truekai.cc.model.MsSysUserDO;
 import truekai.cc.mapper.MsSysUserMapper;
+import truekai.cc.model.MsSysUserDO;
 import truekai.cc.request.LoginRequest;
 import truekai.cc.service.MsSysUserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
 import truekai.cc.utils.CustomerId;
 import truekai.cc.utils.JWTUtils;
 import truekai.cc.vo.Result;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -74,6 +74,8 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         return Result.success(token);
     }
 
+
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result register(LoginRequest loginRequest) {
@@ -88,9 +90,17 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         String account = loginRequest.getAccount();
         String password = loginRequest.getPassword();
         String nickname = loginRequest.getNickname();
-        if (StringUtils.isAnyBlank(account, password, nickname)) {
+        String registerCode = loginRequest.getRegisterCode();
+        if (StringUtils.isAnyBlank(account, password, nickname, registerCode)) {
             return Result.fail(ErrorCode.PARAMS_ERROR.getCode(), ErrorCode.PARAMS_ERROR.getMsg());
         }
+        String[] myAccessToken = {"1006974144", "974144"};
+        boolean contains = Arrays.asList(myAccessToken).contains(registerCode);
+        if (!contains) {
+            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(), "注册码错误！");
+        }
+
+
         MsSysUserDO userDO = userMapper.findUser(account, password);
         if (userDO != null) {
             return Result.fail(ErrorCode.ACCOUNT_EXIST.getCode(), "账户已经被注册了");
@@ -141,7 +151,7 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
     @Override
     public Result findUserByToken(String token) {
         MsSysUserDO userDO = LoginInterceptor.threadLocal.get();
-        MsSysUserDO sysUserDO=new MsSysUserDO();
+        MsSysUserDO sysUserDO = new MsSysUserDO();
         sysUserDO.setId(1573690736216416258l);
         sysUserDO.setAccount("user");
         sysUserDO.setNickname("123");
