@@ -65,6 +65,9 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
     @Value("${newArticles.limit}")
     private Integer newArticleslimit;
 
+    @Value("${enable.flush.db}")
+    private Integer enableFlushDB;
+
     @Override
     public Result articlesList(ArticleListRequest articleListRequest) {
         log.info("MsArticleServiceImpl.articlesList入参：{}", articleListRequest);
@@ -190,11 +193,17 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
 
     @Override
     public Result flush() {
-        MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
-        //删除所有数据
-        articleMapper.delete(null);
-        msArticleTagMapper.delete(null);
-        msArticleBodyMapper.delete(null);
-        return null;
+        if(1==enableFlushDB) {
+            MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
+            log.warn("用户：{}，正在fulshDB...",sysUserDO.getAccount());
+            //删除所有数据
+            articleMapper.delete(null);
+            msArticleTagMapper.delete(null);
+            msArticleBodyMapper.delete(null);
+            return Result.success(null);
+        }else {
+            return Result.fail(-9,"不允许此操作");
+        }
+
     }
 }

@@ -36,11 +36,10 @@ public class ConsumerRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("启动springboot后去数据库加载数据");
         OSSConfig bean = applicationContext.getBean("oSSConfig", OSSConfig.class);
-
         MsConfigDO msConfigDO = configMapper.selectById(OOSConfigId);
         OSSConfig ossConfig = JSON.parseObject(msConfigDO.getJson(), OSSConfig.class);
         BeanUtils.copyProperties(ossConfig, bean);
-        System.out.println(bean);
+
     }
 
 
