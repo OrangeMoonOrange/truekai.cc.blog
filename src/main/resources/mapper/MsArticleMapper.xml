@@ -80,7 +80,7 @@
                     </if>
         </where>
 
-        order by ma.weight, ma.create_date desc
+        order by ma.weight desc, ma.create_date desc
 
     </select>
 
