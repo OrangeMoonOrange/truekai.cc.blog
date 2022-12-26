@@ -23,7 +23,7 @@ public class ViewCountHandler {
     private MsArticleMapper articleMapper;
 
 
-    @Scheduled(fixedRate = 10000*20,initialDelay = 5000)
+    @Scheduled(cron = "${ViewCountHandler.flush.readCount:0/10 * * * * ?}")
     @Async //扔到线程池 执行
     public void scheduled(){
        log.info("=====>>>>> 同步浏览量开始执行  {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
