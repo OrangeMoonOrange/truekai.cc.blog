@@ -16,6 +16,7 @@ import truekai.cc.request.LoginRequest;
 import truekai.cc.service.MsSysUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import truekai.cc.utils.CustomerId;
 import truekai.cc.utils.JWTUtils;
 import truekai.cc.vo.Result;
 
@@ -41,6 +42,9 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
     private MsSysUserMapper userMapper;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    CustomerId customerId;
 
 
     @Override
@@ -93,6 +97,7 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         }
         userDO = new MsSysUserDO();
         userDO.setNickname(nickname);
+        userDO.setId(customerId.nextId());
         userDO.setAccount(account);
         userDO.setPassword(DigestUtils.md5Hex(password + slat));
         userDO.setCreateDate(System.currentTimeMillis());
@@ -103,6 +108,7 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         userDO.setSalt("");
         userDO.setStatus("");
         userDO.setEmail("");
+
         int insert = userMapper.insert(userDO);
         String token = JWTUtils.createToken(userDO.getId());
         redisTemplate.opsForValue().set("user::login::" + token, JSON.toJSONString(userDO), 1, TimeUnit.DAYS);

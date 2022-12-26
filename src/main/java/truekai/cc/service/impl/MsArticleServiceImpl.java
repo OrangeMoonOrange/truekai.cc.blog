@@ -80,7 +80,7 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
         log.info("MsArticleServiceImpl.articlesViewById：{}", id);
         MsArticleVo msArticleVo = articleMapper.selectArticlesById(id);
         //异步更新阅读的时候如何保证高并发的时候阅读数量是正常的?
-        threadService.updateArticleViewCount(id, msArticleVo);
+        threadService.updateArticleViewCount2(id, msArticleVo);
         return Result.success(msArticleVo);
     }
 
@@ -113,7 +113,7 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
     public Result publish(ArticleRequest articleParam) {
         MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
         MsArticleDO articleDO = null;
-        String id="";
+        String id = "";
         if (articleParam.getId() == null) { //新增
             articleDO = new MsArticleDO();
             //维护article表信息
@@ -152,7 +152,7 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
                 msArticleTagMapper.insert(articleTagDO);
             }
             articleMapper.insert(articleDO);
-            id=articleDOKey+"";
+            id = articleDOKey + "";
         } else {//修改
             //更新新的信息
             articleDO = new MsArticleDO();
@@ -181,10 +181,20 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
                 articleTagDO.setId(articleTagDOKey);
                 msArticleTagMapper.insert(articleTagDO);
             }
-            id=articleParam.getId()+"";
+            id = articleParam.getId() + "";
         }
         Map<String, String> map = new HashMap<>();
         map.put("id", id);
         return Result.success(map);
+    }
+
+    @Override
+    public Result flush() {
+        MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
+        //删除所有数据
+        articleMapper.delete(null);
+        msArticleTagMapper.delete(null);
+        msArticleBodyMapper.delete(null);
+        return null;
     }
 }

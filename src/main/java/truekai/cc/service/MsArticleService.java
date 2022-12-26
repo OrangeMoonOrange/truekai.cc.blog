@@ -54,4 +54,10 @@ public interface MsArticleService extends IService<MsArticleDO> {
      * @return
      */
     Result publish(ArticleRequest articleParam);
+
+    /**
+     * flush db
+     * @return
+     */
+    Result flush();
 }

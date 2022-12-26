@@ -22,13 +22,18 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         //跨域配置，不可设置为*，不安全, 前后端分离项目，可能域名不一致
         //本地测试 端口不一致 也算跨域
-        registry.addMapping("/**").allowedOrigins("*");
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true)
+                .maxAge(3600)
+                .allowedHeaders("*");
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/articles/publish","/users/currentUser")
+                .addPathPatterns("/articles/publish","/users/currentUser","/articles/flush")
                 .excludePathPatterns("/static/**","/project/**","/assets/**");
     }
 }

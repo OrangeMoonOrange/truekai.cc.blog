@@ -59,6 +59,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
+
         if (StringUtils.isNotBlank(token)) {
             MsSysUserDO userDO = userService.checkToken(token);
             if (userDO == null) {

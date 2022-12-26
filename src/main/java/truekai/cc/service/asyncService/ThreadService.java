@@ -2,6 +2,7 @@ package truekai.cc.service.asyncService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,9 @@ public class ThreadService {
     @Autowired
     private MsArticleMapper articleMapper;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
 
 
     //异步更新文章的阅读数,
@@ -32,6 +36,14 @@ public class ThreadService {
     public void updateArticleViewCount(Long id, MsArticleVo vo) {
         log.info("更新ID:{},前阅读数量:{}",id,vo.getViewCounts());
         Integer a=articleMapper.updateArticleViewCountById(id,vo.getViewCounts());
+        log.info("异步更新阅读数量成功！");
+    }
+    //方案2：通过Redis来同步
+    @Async
+    @Transactional
+    public void updateArticleViewCount2(Long id, MsArticleVo vo) {
+        log.info("更新ID:{},前阅读数量:{}",id,vo.getViewCounts());
+        redisTemplate.opsForHash().increment("blog::view_count",String.valueOf(vo.getId()),1);
         log.info("异步更新阅读数量成功！");
     }
 }

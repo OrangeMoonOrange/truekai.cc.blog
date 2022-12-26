@@ -1,5 +1,6 @@
 package truekai.cc.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.PutObjectResult;
@@ -33,6 +34,8 @@ public class FileServiceImpl implements FileService {
         String endpoint = ossConfig.getEndpoint();
         String accessKeyId = ossConfig.getAccessKeyId();
         String accessKeySecret = ossConfig.getAccessKeySecret();
+
+        System.out.println(JSON.toJSONString(ossConfig));
         //创建OSS对象
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 

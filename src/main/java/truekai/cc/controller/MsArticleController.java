@@ -73,6 +73,13 @@ public class MsArticleController {
     }
 
 
+    @PostMapping("articles/flush")
+    public Result flush(){
+        Result result = msArticleService.flush();
+        return result;
+    }
+
+
 
 }
 
