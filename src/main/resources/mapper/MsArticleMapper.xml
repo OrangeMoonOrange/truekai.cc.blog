@@ -76,7 +76,7 @@
             and ma.category_id=#{re.categoryId}
           </if>
                     <if test="re.tagId != null and re.tagId !=''">
-                        and ma.tag_id=#{re.tagId}
+                        and mat.tag_id=#{re.tagId}
                     </if>
         </where>
 

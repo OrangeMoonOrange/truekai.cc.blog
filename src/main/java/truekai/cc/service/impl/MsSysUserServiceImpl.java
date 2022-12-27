@@ -65,9 +65,11 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         password = DigestUtils.md5Hex(password + slat);
         MsSysUserDO userDO = userMapper.findUser(account, password);
         if (userDO == null) {
+            //账号没有注册
             return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         }
         if(!userDO.getPassword().equals(password)){
+            //密码错误
             return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         }
         String token = JWTUtils.createToken(userDO.getId());
