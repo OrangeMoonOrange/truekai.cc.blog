@@ -60,4 +60,6 @@ public interface MsArticleService extends IService<MsArticleDO> {
      * @return
      */
     Result flush();
+
+    Result searchArticle(String search);
 }

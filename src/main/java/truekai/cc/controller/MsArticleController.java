@@ -34,6 +34,10 @@ public class MsArticleController {
         Result result = msArticleService.articlesList(articleListRequest);
         return result;
     }
+    @PostMapping("articles/search")
+    public Result search(@RequestBody ArticleRequest articleParam){
+        return msArticleService.searchArticle(articleParam.getSearch());
+    }
 
     @PostMapping("articles/view/{id}")
     public Result articlesViewById(@PathVariable("id") Long id) {

@@ -68,6 +68,9 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
     @Value("${enable.flush.db}")
     private Integer enableFlushDB;
 
+    @Value("${search.limt}")
+    private Integer searchLimt;
+
     @Override
     public Result articlesList(ArticleListRequest articleListRequest) {
         log.info("MsArticleServiceImpl.articlesList入参：{}", articleListRequest);
@@ -193,17 +196,29 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
 
     @Override
     public Result flush() {
-        if(1==enableFlushDB) {
+        if (1 == enableFlushDB) {
             MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
-            log.warn("用户：{}，正在fulshDB...",sysUserDO.getAccount());
+            log.warn("用户：{}，正在fulshDB...", sysUserDO.getAccount());
             //删除所有数据
             articleMapper.delete(null);
             msArticleTagMapper.delete(null);
             msArticleBodyMapper.delete(null);
             return Result.success(null);
-        }else {
-            return Result.fail(-9,"不允许此操作");
+        } else {
+            return Result.fail(-9, "不允许此操作");
         }
 
+    }
+
+    @Override
+    public Result searchArticle(String search) {
+        LambdaQueryWrapper<MsArticleDO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(MsArticleDO::getViewCounts);
+        queryWrapper.select(MsArticleDO::getId, MsArticleDO::getTitle);
+        queryWrapper.like(MsArticleDO::getTitle, search);
+        queryWrapper.last("limit " + searchLimt);
+        //select id,title from article order by view_counts desc limit 5
+        List<MsArticleDO> articles = articleMapper.selectList(queryWrapper);
+        return Result.success(articles);
     }
 }
