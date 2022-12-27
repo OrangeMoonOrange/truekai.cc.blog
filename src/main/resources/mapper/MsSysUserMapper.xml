@@ -28,7 +28,7 @@
     <select id="findUser" resultType="truekai.cc.model.MsSysUserDO">
         select *
         from ms_sys_user
-        where account = #{account}
+        where account = #{account} and status = "1"
     </select>
 
 </mapper>
