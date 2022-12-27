@@ -51,14 +51,15 @@ public class LoginInterceptor implements HandlerInterceptor {
         log.info("=================request end===========================");
 
         //ToDo 简单处理跨域 OPTIONS请求，后续需要改进
-        if(method.equalsIgnoreCase("OPTIONS")
-                &&("/users/currentUser".equalsIgnoreCase(requestURI)
-        || "/tags".equalsIgnoreCase(requestURI)
-        || "/categorys".equalsIgnoreCase(requestURI)
-        || "/articles/publish".equalsIgnoreCase(requestURI))){
+        if (method.equalsIgnoreCase("OPTIONS")
+                && ("/users/currentUser".equalsIgnoreCase(requestURI)
+                || "/tags".equalsIgnoreCase(requestURI)
+                || "/categorys".equalsIgnoreCase(requestURI)
+                || "/articles/publish".equalsIgnoreCase(requestURI) || "/comments/create/change".equalsIgnoreCase(requestURI))) {
             return true;
         }
 
+        //特殊判断评论接口
 
         if (StringUtils.isNotBlank(token)) {
             MsSysUserDO userDO = userService.checkToken(token);
@@ -68,7 +69,12 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
             threadLocal.set(userDO);
             return true;
+        } else {
+            if("/comments/create/change".equals(requestURI)){ //对于评论接口的扩展
+                return true;
+            }
         }
+
         CommonUtil.sendJsonMessage(response, Result.fail(ErrorCode.NO_LOGIN.getCode(), "未登录"));
         return false;
     }

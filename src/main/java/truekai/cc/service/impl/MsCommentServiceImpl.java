@@ -1,10 +1,16 @@
 package truekai.cc.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import truekai.cc.interceptor.LoginInterceptor;
+import truekai.cc.mapper.MsArticleMapper;
 import truekai.cc.mapper.MsCommentMapper;
+import truekai.cc.model.MsArticleDO;
 import truekai.cc.model.MsCommentDO;
+import truekai.cc.model.MsSysUserDO;
 import truekai.cc.request.CommentRequest;
 import truekai.cc.service.MsCommentService;
 import truekai.cc.utils.CustomerId;
@@ -27,6 +33,9 @@ public class MsCommentServiceImpl extends ServiceImpl<MsCommentMapper, MsComment
     @Autowired
     private CustomerId customerId;
 
+    @Autowired
+    private MsArticleMapper articleMapper;
+
     @Override
     public Result commentsByArticleId(Long id) {
         //二级分类问题
@@ -36,11 +45,11 @@ public class MsCommentServiceImpl extends ServiceImpl<MsCommentMapper, MsComment
          * 3. 判断 如果 level = 1 要去查询它有没有子评论
          * 4. 如果有 根据评论id 进行查询 （parent_id）
          */
-        List<CommentVo> comments = commentMapper.selectListById(id,null);
+        List<CommentVo> comments = commentMapper.selectListById(id, null);
         //开始分类
         //找到所有一级分类
         List<CommentVo> msCommentDOStream = comments.stream().filter(comment -> {
-                    return comment.getParentId() == 0;
+                    return comment.getParentId().equals("0");
                 }).map(comment -> {
                     comment.setChildrens(getCommentChinds(comment, comments));
                     return comment;
@@ -68,27 +77,42 @@ public class MsCommentServiceImpl extends ServiceImpl<MsCommentMapper, MsComment
     }
 
     @Override
+    @Transactional
     public Result comment(CommentRequest commentParam) {
+        MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
+        if (sysUserDO == null) {
+            //默认给你一个用户：热心网友
+            sysUserDO = new MsSysUserDO();
+            sysUserDO.setId(1574784753217908745l);
+        }
+        //怎么可以动态知道他有没有登录呢？？
         MsCommentDO comment = new MsCommentDO();
-        long l = customerId.nextId();
+        String l = customerId.nextId() + "";
         comment.setId(l);
         comment.setArticleId(commentParam.getArticleId());
-        comment.setAuthorId(1L);//TODO
+        comment.setAuthorId(sysUserDO.getId());
         comment.setContent(commentParam.getContent());
         comment.setCreateDate(System.currentTimeMillis());
-        Long parent = commentParam.getParent();
-        if (parent == null || parent == 0) {
+        String parent = commentParam.getParent();
+        if (parent == null || parent.equals("0")) {
             comment.setLevel(1 + "");
         } else {
             comment.setLevel(2 + "");
         }
-        comment.setParentId(parent == null ? 0 : parent);
+        comment.setParentId(parent == null ? "0" : parent);
         Long toUserId = commentParam.getToUserId();
         comment.setToUid(toUserId == null ? 0 : toUserId);
         commentMapper.insert(comment);
+
+        //更新阅读数量
+        LambdaUpdateWrapper<MsArticleDO> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(MsArticleDO::getId, commentParam.getArticleId());
+        wrapper.setSql(true, "comment_counts=comment_counts+1");
+        articleMapper.update(null, wrapper);
+
+
         //更新文章的评论数量 ToDo
-        System.out.println("dddd");
-        List<CommentVo> comments = commentMapper.selectListById(commentParam.getArticleId(),l);
+        List<CommentVo> comments = commentMapper.selectListById(commentParam.getArticleId(), l);
         return Result.success(comments.get(0));
     }
 }

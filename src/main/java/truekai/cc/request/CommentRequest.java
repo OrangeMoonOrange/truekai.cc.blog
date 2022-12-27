@@ -12,7 +12,7 @@ public class CommentRequest {
 
     private String content;
 
-    private Long parent;
+    private String parent;
 
     private Long toUserId;
 }

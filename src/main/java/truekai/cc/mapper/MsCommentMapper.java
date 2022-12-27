@@ -23,5 +23,5 @@ public interface MsCommentMapper extends BaseMapper<MsCommentDO> {
      * @param id 文章id
      * @return
      */
-    List<CommentVo> selectListById(@Param("id") Long id,@Param("mcId") Long mcId);
+    List<CommentVo> selectListById(@Param("id") Long id,@Param("mcId") String mcId);
 }

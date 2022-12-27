@@ -33,7 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/articles/publish","/users/currentUser","/articles/flush")
+                .addPathPatterns("/articles/publish","/users/currentUser","/articles/flush","/comments/create/change")
                 .excludePathPatterns("/static/**","/project/**","/assets/**");
     }
 }
