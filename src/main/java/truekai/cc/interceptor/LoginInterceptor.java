@@ -70,7 +70,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             threadLocal.set(userDO);
             return true;
         } else {
-            if("/comments/create/change".equals(requestURI)){ //对于评论接口的扩展
+            if(requestURI.contains("/comments/create/change")){
                 return true;
             }
         }
