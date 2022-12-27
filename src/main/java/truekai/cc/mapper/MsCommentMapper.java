@@ -1,7 +1,11 @@
 package truekai.cc.mapper;
 
-import truekai.cc.model.MsCommentDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import truekai.cc.model.MsCommentDO;
+import truekai.cc.vo.CommentVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface MsCommentMapper extends BaseMapper<MsCommentDO> {
 
+
+    /**
+     *
+     * @param id 文章id
+     * @return
+     */
+    List<CommentVo> selectListById(@Param("id") Long id,@Param("mcId") Long mcId);
 }

@@ -68,17 +68,22 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
             //账号没有注册
             return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         }
-        if(!userDO.getPassword().equals(password)){
+        if (!userDO.getPassword().equals(password)) {
             //密码错误
             return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         }
+        //更新登录时间
+        MsSysUserDO newUser = new MsSysUserDO();
+        newUser.setId(userDO.getId());
+        newUser.setLastLogin(System.currentTimeMillis());
+        userMapper.updateById(newUser);
+
         String token = JWTUtils.createToken(userDO.getId());
 
         redisTemplate.opsForValue().set("user::login::" + token, JSON.toJSONString(userDO), 1, TimeUnit.DAYS);
 
         return Result.success(token);
     }
-
 
 
     @Override

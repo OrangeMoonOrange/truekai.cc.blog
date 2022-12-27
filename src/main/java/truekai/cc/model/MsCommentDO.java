@@ -1,12 +1,14 @@
 package truekai.cc.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -30,7 +32,7 @@ public class MsCommentDO implements Serializable {
 
     private Long createDate;
 
-    private Integer articleId;
+    private Long articleId;
 
     private Long authorId;
 
@@ -39,6 +41,9 @@ public class MsCommentDO implements Serializable {
     private Long toUid;
 
     private String level;
+
+    @TableField(exist = false)
+    private List<MsCommentDO> childrens;
 
 
 }

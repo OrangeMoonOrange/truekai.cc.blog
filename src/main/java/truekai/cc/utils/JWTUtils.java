@@ -38,6 +38,7 @@ public class JWTUtils {
     }
 
     public static void main(String[] args) {
+        System.out.println(createToken(121212l));
 
     }
 

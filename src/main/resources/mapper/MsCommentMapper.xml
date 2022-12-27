@@ -4,19 +4,54 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="truekai.cc.model.MsCommentDO">
-        <id column="id" property="id" />
-        <result column="content" property="content" />
-        <result column="create_date" property="createDate" />
-        <result column="article_id" property="articleId" />
-        <result column="author_id" property="authorId" />
-        <result column="parent_id" property="parentId" />
-        <result column="to_uid" property="toUid" />
-        <result column="level" property="level" />
+        <id column="id" property="id"/>
+        <result column="content" property="content"/>
+        <result column="create_date" property="createDate"/>
+        <result column="article_id" property="articleId"/>
+        <result column="author_id" property="authorId"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="to_uid" property="toUid"/>
+        <result column="level" property="level"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, content, create_date, article_id, author_id, parent_id, to_uid, level
+        id
+        , content, create_date, article_id, author_id, parent_id, to_uid, level
     </sql>
+
+    <select id="selectListById" resultType="truekai.cc.vo.CommentVo">
+
+        SELECT
+            mc.id,
+            mc.content,
+            mc.create_date,
+            mc.level,
+            mc.parent_id,
+            msu.nickname as "author.nickname",
+            msu.avatar as "author.avatar",
+            msu.id as "author.id",
+            msu2.nickname as "toUser.nickname",
+            msu2.avatar as "toUser.avatar",
+            msu2.id as "toUser.id"
+        from
+            ms_comment mc
+                left join ms_sys_user msu
+                          on
+                              mc.author_id = msu.id
+                left join ms_sys_user msu2
+                          on
+                              mc.to_uid = msu2.id
+        <where>
+            <if test="id != null and id !=''">
+                and mc.article_id =#{id}
+            </if>
+            <if test="mcId != null and mcId !=''">
+                and mc.id=#{mcId}
+            </if>
+        </where>
+        ORDER BY
+            mc.create_date desc;
+    </select>
 
 </mapper>

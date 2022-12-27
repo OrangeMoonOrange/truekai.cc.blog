@@ -1,11 +1,10 @@
 package truekai.cc.controller;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import truekai.cc.request.CommentRequest;
+import truekai.cc.service.MsCommentService;
 import truekai.cc.vo.Result;
 
 /**
@@ -20,13 +19,20 @@ import truekai.cc.vo.Result;
 @RequestMapping("/comments")
 public class MsCommentController {
 
-
-    //通过id或者评论
-    @GetMapping("/article/{id}")
-    public Result getArticleCommentById(@PathVariable("id") Long id) {
+    @Autowired
+    private MsCommentService commentsService;
 
 
-        return Result.success(null);
+    //查询评论列表
+    @GetMapping("article/{id}")
+    public Result comments(@PathVariable("id") Long id) {
+        return commentsService.commentsByArticleId(id);
+    }
+
+
+    @PostMapping("create/change")
+    public Result comment(@RequestBody CommentRequest commentParam) {
+        return commentsService.comment(commentParam);
     }
 
 }
