@@ -17,6 +17,7 @@ import truekai.cc.utils.CustomerId;
 import truekai.cc.vo.CommentVo;
 import truekai.cc.vo.Result;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,7 +93,7 @@ public class MsCommentServiceImpl extends ServiceImpl<MsCommentMapper, MsComment
         comment.setArticleId(commentParam.getArticleId());
         comment.setAuthorId(sysUserDO.getId());
         comment.setContent(commentParam.getContent());
-        comment.setCreateDate(System.currentTimeMillis());
+        comment.setCreateDate(new Date());
         String parent = commentParam.getParent();
         if (parent == null || parent.equals("0")) {
             comment.setLevel(1 + "");

@@ -27,7 +27,7 @@ public class MsArticleVo implements Serializable {
     /**
      * 创建时间
      */
-    private Long createDate;
+    private String createDate;
 
     /**
      * 简介

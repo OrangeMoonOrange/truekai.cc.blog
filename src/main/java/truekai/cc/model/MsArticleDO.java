@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -37,7 +38,7 @@ public class MsArticleDO implements Serializable {
     /**
      * 创建时间
      */
-    private Long createDate;
+    private Date createDate;
 
     /**
      * 简介

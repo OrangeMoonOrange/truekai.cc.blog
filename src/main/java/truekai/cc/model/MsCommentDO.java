@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class MsCommentDO implements Serializable {
 
     private String content;
 
-    private Long createDate;
+    private Date createDate;
 
     private Long articleId;
 

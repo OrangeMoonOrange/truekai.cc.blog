@@ -1,10 +1,12 @@
 package truekai.cc.mapperTest;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import truekai.cc.mapper.MsSysUserMapper;
+import truekai.cc.model.MsSysUserDO;
 
 /**
  * 作者：熊凯凯
@@ -21,8 +23,12 @@ public class UserMapperTest {
 
     @Test
     void contextLoads() {
-        System.out.println(dataSource.getProperties());
-        System.out.println(dataSource.getMaxActive());
-        System.out.println(dataSource.getClass());
+        MsSysUserDO sysUserDO = userMapper.selectOne(new LambdaQueryWrapper<MsSysUserDO>()
+                        .select(MsSysUserDO::getId)
+                .eq(MsSysUserDO::getAccount, "daidai2"));
+        if(sysUserDO!=null){
+            sysUserDO.setNickname("gougou");
+            userMapper.updateById(sysUserDO);
+        }
     }
 }

@@ -28,6 +28,7 @@ import truekai.cc.vo.MsArticleVo;
 import truekai.cc.vo.Result;
 import truekai.cc.vo.TagsVo;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,7 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
             articleDO.setWeight(0);
             articleDO.setSummary(articleParam.getSummary());
             articleDO.setCommentCounts(0);
-            articleDO.setCreateDate(System.currentTimeMillis());
+            articleDO.setCreateDate(new Date());
             articleDO.setCategoryId(articleParam.getCategory().getId());
             articleDO.setBodyId(articleBodyKey);
 

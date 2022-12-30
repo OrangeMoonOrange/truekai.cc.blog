@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
         //跨域配置，不可设置为*，不安全, 前后端分离项目，可能域名不一致
         //本地测试 端口不一致 也算跨域
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://truekai.cc","http://localhost:8080")
+               .allowedOriginPatterns("http://truekai.cc","http://localhost:8080")
                 .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowCredentials(true)
                 .maxAge(3600)

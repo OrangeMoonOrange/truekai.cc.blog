@@ -2,10 +2,12 @@ package truekai.cc.vo;
 
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,7 +27,8 @@ public class CommentVo {
     @TableField(exist = false)
     private List<CommentVo> childrens;
 
-    private Long createDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date createDate;
 
     private Integer level;
 

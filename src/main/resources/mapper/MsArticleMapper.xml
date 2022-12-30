@@ -20,7 +20,7 @@
     <resultMap id="articlesList" type="truekai.cc.vo.MsArticleVo">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="comment_counts" property="commentCounts" jdbcType="INTEGER"/>
-        <result column="create_date" property="createDate" jdbcType="BIGINT"/>
+        <result column="create_date" property="createDate" jdbcType="DATE"/>
         <result column="summary" property="summary" jdbcType="VARCHAR"/>
         <result column="title" property="title" jdbcType="VARCHAR"/>
         <result column="view_counts" property="viewCounts" jdbcType="INTEGER"/>
@@ -117,8 +117,10 @@
     </update>
 
     <select id="listArchives" resultType="truekai.cc.vo.ArchivesVo">
-        select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m')
-        as month,count(*) as count from ms_article group by year,month
+        select year(create_date) as year ,MONTH(create_date)
+
+
+            as month,count(*) as count from ms_article group by year,month
     </select>
 
 </mapper>
