@@ -69,6 +69,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                 return false;
             }
             threadLocal.set(userDO);
+            MsSysUserDO sysUserDO = threadLocal.get();
             return true;
         } else {
             if(requestURI.contains("/comments/create/change")){
