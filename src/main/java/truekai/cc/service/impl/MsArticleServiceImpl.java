@@ -86,8 +86,19 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
     public Result articlesViewById(Long id) {
         log.info("MsArticleServiceImpl.articlesViewById：{}", id);
         MsArticleVo msArticleVo = articleMapper.selectArticlesById(id);
+        if (msArticleVo == null) {
+            return Result.fail(123, "数据异常！");
+        }
         //异步更新阅读的时候如何保证高并发的时候阅读数量是正常的?
-        threadService.updateArticleViewCount2(id, msArticleVo);
+        //20230104 更新阅读数的优化。
+//        MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
+//        if (sysUserDO == null) { //没有登录：的情况下。采取更新阅读量
+//            threadService.updateArticleViewCount2(id, msArticleVo);
+//        }
+//        if (sysUserDO != null && msArticleVo.getAuthor().getNickname().equals(sysUserDO.getNickname())) {//登录后：自己登录自己查看自己的文章，不更新阅读量
+//            return Result.success(msArticleVo);
+//        }
+
         return Result.success(msArticleVo);
     }
 
