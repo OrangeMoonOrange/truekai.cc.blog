@@ -70,7 +70,7 @@
             mat.tag_id = mt.id
                 <where>
         <if test="re.year != null and re.year.length>0 and re.month != null and re.month.length>0">
-            and (FROM_UNIXTIME(ma.create_date/1000,'%Y') =#{re.year} and FROM_UNIXTIME(ma.create_date/1000,'%m')=#{re.month})
+            and year(ma.create_date)=#{re.year} and MONTH(ma.create_date)=#{re.month}
         </if>
            <if test="re.categoryId != null and re.categoryId !=''">
             and ma.category_id=#{re.categoryId}
