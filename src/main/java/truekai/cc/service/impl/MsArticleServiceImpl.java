@@ -13,6 +13,7 @@ import truekai.cc.interceptor.LoginInterceptor;
 import truekai.cc.mapper.MsArticleBodyMapper;
 import truekai.cc.mapper.MsArticleMapper;
 import truekai.cc.mapper.MsArticleTagMapper;
+import truekai.cc.mapper.MsSysUserMapper;
 import truekai.cc.model.MsArticleBodyDO;
 import truekai.cc.model.MsArticleDO;
 import truekai.cc.model.MsArticleTagDO;
@@ -72,6 +73,12 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
     @Value("${search.limt}")
     private Integer searchLimt;
 
+    @Autowired
+    private MsSysUserMapper userMapper;
+
+    @Value("${is.push.new.msg}")
+    private Integer isPushNewMsg;
+
     @Override
     public Result articlesList(ArticleListRequest articleListRequest) {
         log.info("MsArticleServiceImpl.articlesList入参：{}", articleListRequest);
@@ -91,13 +98,13 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
         }
         //异步更新阅读的时候如何保证高并发的时候阅读数量是正常的?
         //20230104 更新阅读数的优化。
-//        MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
-//        if (sysUserDO == null) { //没有登录：的情况下。采取更新阅读量
-//            threadService.updateArticleViewCount2(id, msArticleVo);
-//        }
-//        if (sysUserDO != null && msArticleVo.getAuthor().getNickname().equals(sysUserDO.getNickname())) {//登录后：自己登录自己查看自己的文章，不更新阅读量
-//            return Result.success(msArticleVo);
-//        }
+        MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
+        if (sysUserDO == null) { //没有登录：的情况下。采取更新阅读量
+            threadService.updateArticleViewCount2(id, msArticleVo);
+        }
+        if (sysUserDO != null && msArticleVo.getAuthor().getNickname().equals(sysUserDO.getNickname())) {//登录后：自己登录自己查看自己的文章，不更新阅读量
+            return Result.success(msArticleVo);
+        }
 
         return Result.success(msArticleVo);
     }
@@ -171,6 +178,11 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
             }
             articleMapper.insert(articleDO);
             id = articleDOKey + "";
+
+            //发送通知邮件
+            if (isPushNewMsg == 1) {
+                threadService.sendHtmlMailForNewArticle(articleDO.getAuthorId(),articleDOKey,articleDO.getTitle());
+            }
         } else {//修改
             //更新新的信息
             articleDO = new MsArticleDO();
@@ -204,6 +216,13 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
         Map<String, String> map = new HashMap<>();
         map.put("id", id);
         return Result.success(map);
+    }
+
+    public static void main(String[] args) {
+        String articleDOKey="2222";
+
+        String contenet=String.format("欢迎查看<a href=\"http://truekai.cc/#/view/%s\">%s</a>",articleDOKey,"dddddd");
+        System.out.println(contenet);
     }
 
     @Override

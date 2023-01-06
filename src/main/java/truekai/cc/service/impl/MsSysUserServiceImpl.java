@@ -100,7 +100,8 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         String account = loginRequest.getAccount();
         String password = loginRequest.getPassword();
         String nickname = loginRequest.getNickname();
-        String registerCode = loginRequest.getRegisterCode();
+        String registerCode = loginRequest.getCode();
+        String email = loginRequest.getEmail();
         if (StringUtils.isAnyBlank(account, password, nickname, registerCode)) {
             return Result.fail(ErrorCode.PARAMS_ERROR.getCode(), ErrorCode.PARAMS_ERROR.getMsg());
         }
@@ -126,8 +127,8 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
         userDO.setAdmin(1); //1 为true
         userDO.setDeleted(0); // 0 为false
         userDO.setSalt("");
-        userDO.setStatus("");
-        userDO.setEmail("");
+        userDO.setStatus("1");
+        userDO.setEmail(email);
 
         int insert = userMapper.insert(userDO);
         String token = JWTUtils.createToken(userDO.getId());

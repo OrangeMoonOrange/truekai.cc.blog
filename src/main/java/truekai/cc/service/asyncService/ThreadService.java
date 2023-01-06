@@ -1,13 +1,21 @@
 package truekai.cc.service.asyncService;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import truekai.cc.mapper.MsArticleMapper;
+import truekai.cc.mapper.MsSysUserMapper;
+import truekai.cc.model.MsSysUserDO;
+import truekai.cc.service.MailService;
 import truekai.cc.vo.MsArticleVo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 作者：熊凯凯
@@ -21,6 +29,16 @@ public class ThreadService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private MsSysUserMapper userMapper;
+
+    @Value("${is.push.new.msg}")
+    private Integer isPushNewMsg;
 
 
 
@@ -45,5 +63,45 @@ public class ThreadService {
         log.info("更新ID:{},前阅读数量:{}",id,vo.getViewCounts());
         redisTemplate.opsForHash().increment("blog::view_count",String.valueOf(vo.getId()),1);
         log.info("异步更新阅读数量成功！");
+    }
+
+    /**
+     * 异步发送简单文本邮件
+     * @param to
+     * @param subject
+     * @param content
+     */
+    @Async
+    public void sendMailForNewArticle(List<String> to, String subject, String content) {
+        for (String s : to) {
+            mailService.sendSimpleMail(s,subject,content);
+        }
+        log.info("邮件发送成功");
+    }
+
+    @Async
+    public void sendHtmlMailForNewArticle(Long articAuthorId,Long articleDOKey,String title) {
+        if (isPushNewMsg == 1) {
+            List<String> toList = new ArrayList<>();
+            List<MsSysUserDO> msSysUserDOS = userMapper.selectList(null);
+            for (MsSysUserDO msSysUserDO : msSysUserDOS) {
+                //邮件地址存在且不是作者的发送通知邮件
+                if (StringUtils.isNotBlank(msSysUserDO.getEmail()) && (!articAuthorId.equals(msSysUserDO.getId()))) {
+                    toList.add(msSysUserDO.getEmail());
+                }
+            }
+            //组装发送的内筒
+            String subject = "发表新的博客啦！主题是：【" + title + "】";
+            String contenet=String.format("欢迎查看新博客：<a href=\"http://truekai.cc/#/view/%s\">%s</a>",articleDOKey,title);
+            try {
+                for (String s : toList) {
+                    mailService.sendHtmlMail(s, subject, contenet, null);
+                }
+            }catch (Exception e){
+                log.error("发送通知邮件失败");
+            }
+        }
+
+        log.info("邮件发送成功");
     }
 }
