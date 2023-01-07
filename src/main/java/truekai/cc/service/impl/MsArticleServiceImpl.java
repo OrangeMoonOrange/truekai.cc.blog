@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import truekai.cc.common.aop.LogAnnotation;
+import truekai.cc.common.aop.MyConvert;
 import truekai.cc.interceptor.ArticleListRequest;
 import truekai.cc.interceptor.LoginInterceptor;
 import truekai.cc.mapper.MsArticleBodyMapper;
@@ -90,6 +92,7 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
     }
 
     @Override
+    @LogAnnotation(module = "文章模块",operator = "查看文章",convert = MyConvert.class)
     public Result articlesViewById(Long id) {
         log.info("MsArticleServiceImpl.articlesViewById：{}", id);
         MsArticleVo msArticleVo = articleMapper.selectArticlesById(id);
@@ -135,6 +138,7 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
 
     @Override
     @Transactional
+    @LogAnnotation(module = "",operator = "",convert = MyConvert.class)
     public Result publish(ArticleRequest articleParam) {
         MsSysUserDO sysUserDO = LoginInterceptor.threadLocal.get();
         MsArticleDO articleDO = null;
