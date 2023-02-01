@@ -256,4 +256,9 @@ public class MsArticleServiceImpl extends ServiceImpl<MsArticleMapper, MsArticle
         List<MsArticleDO> articles = articleMapper.selectList(queryWrapper);
         return Result.success(articles);
     }
+
+    @Override
+    public Result articlesDelById(Long id) {
+        return null;
+    }
 }

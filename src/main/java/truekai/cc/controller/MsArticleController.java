@@ -83,6 +83,12 @@ public class MsArticleController {
         return result;
     }
 
+    @PostMapping("articles/del/{id}")
+    public Result delById(@PathVariable("id") Long id){
+        Result result = msArticleService.articlesDelById(id);
+        return result;
+    }
+
 
 
 }

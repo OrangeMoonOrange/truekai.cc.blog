@@ -62,4 +62,11 @@ public interface MsArticleService extends IService<MsArticleDO> {
     Result flush();
 
     Result searchArticle(String search);
+
+    /**
+     * 删除文章
+     * @param id
+     * @return
+     */
+    Result articlesDelById(Long id);
 }
