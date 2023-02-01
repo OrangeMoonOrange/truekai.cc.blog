@@ -49,6 +49,7 @@ public class MsSysUserServiceImpl extends ServiceImpl<MsSysUserMapper, MsSysUser
 
     @Override
     public Result login(LoginRequest loginRequest) {
+
         log.info("MsSysUserServiceImpl.login入参：{}", loginRequest);
         /**
          * 1.校验入参是否合法

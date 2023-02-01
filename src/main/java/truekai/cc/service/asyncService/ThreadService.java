@@ -1,5 +1,6 @@
 package truekai.cc.service.asyncService;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,8 @@ public class ThreadService {
     public void sendHtmlMailForNewArticle(Long articAuthorId,Long articleDOKey,String title) {
         if (isPushNewMsg == 1) {
             List<String> toList = new ArrayList<>();
-            List<MsSysUserDO> msSysUserDOS = userMapper.selectList(null);
+            List<MsSysUserDO> msSysUserDOS = userMapper.selectList(new LambdaQueryWrapper<MsSysUserDO>()
+                    .eq(MsSysUserDO::getStatus,"1"));
             for (MsSysUserDO msSysUserDO : msSysUserDOS) {
                 //邮件地址存在且不是作者的发送通知邮件
                 if (StringUtils.isNotBlank(msSysUserDO.getEmail()) && (!articAuthorId.equals(msSysUserDO.getId()))) {
@@ -96,12 +98,12 @@ public class ThreadService {
             try {
                 for (String s : toList) {
                     mailService.sendHtmlMail(s, subject, contenet, null);
+                    log.info("用户邮件发送成功，{}",s);
                 }
             }catch (Exception e){
                 log.error("发送通知邮件失败");
             }
         }
-
         log.info("邮件发送成功");
     }
 }
